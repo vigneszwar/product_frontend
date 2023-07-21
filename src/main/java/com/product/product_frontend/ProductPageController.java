@@ -57,6 +57,22 @@ public class ProductPageController {
         return "product";
     }
 
+    @GetMapping("/products/new")
+    public String newProductForm(Model model) {
+        model.addAttribute("product", new Product());
+        return "product-form";
+    }
 
+    @GetMapping("/products/edit/{id}")
+    public String editProductForm(@PathVariable("id") long id, Model model) {
+        ResponseEntity<Product> responseEntity = restTemplate.exchange(
+                String.format(url+"/api/products/"+id, serverAddress, serverPort),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Product>() {}
+        );
+        model.addAttribute("product", responseEntity.getBody());
+        return "product-edit-form";
+    }
 
-}
+    }

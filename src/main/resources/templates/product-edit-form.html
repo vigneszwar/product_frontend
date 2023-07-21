@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Product</title>
+</head>
+<body>
+<h1>Create Product</h1>
+<form id="productForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" th:value="${product}? ${product.name}:''" required>
+    <br>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" th:value="${product}? ${product.description}:''" required>
+    <br>
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" th:value="${product}? ${product.price}:''" required>
+    <br>
+    <label for="imageUrl">Image URL:</label>
+    <input type="text" id="imageUrl" name="imageUrl" th:value="${product}? ${product.imageUrl}:''" required>
+    <br>
+
+    <input type="hidden" id="productId" th:value="${product.id}"/>
+    <button type="button" onclick="saveProduct()">Save</button>
+</form>
+
+<script>
+    function saveProduct() {
+        const product = {
+            name: document.getElementById("name").value,
+            description: document.getElementById("description").value,
+            price: parseFloat(document.getElementById("price").value),
+            imageUrl: document.getElementById("imageUrl").value
+        };
+
+        const url = "http://localhost:8081/api/products/"+document.getElementById("productId").value; // Replace with your API endpoint
+
+
+
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(product)
+        })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = "/products";
+                // You can redirect to another page or handle the response as needed
+            })
+            .catch(error => {
+                console.error("Error creating product:", error);
+            });
+    }
+</script>
+</body>
+</html>
